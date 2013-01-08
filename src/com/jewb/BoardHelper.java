@@ -1,6 +1,9 @@
 package com.jewb;
 
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class BoardHelper 
 {
@@ -42,17 +45,44 @@ public class BoardHelper
 			return false;
 	}
 	
-	public boolean validPoint(Board board, Point p)
+	private boolean validPoint(Board board, Point p)
 	{
 		return validPoint(board, p.x, p.y);
 	}
 	
-	public boolean validPoint(Board board, int x, int y)
+	private boolean validPoint(Board board, int x, int y)
 	{
 		return (x >= 0 &&
 				x <= board.getDimension() - 1 &&
 				y >= 0 &&
 				y <= board.getDimension() - 1);
+	}
+	
+	public boolean shift(Board board)
+	{
+		if (!canShift(board))
+			return false;
+		List<Point> shiftPoints = getShifts(board);
+		return false;
+	}
+	
+	private boolean canShift(Board board)
+	{
+		return Arrays.asList(board).contains('_');
+	}
+	
+	private List<Point> getShifts(Board board)
+	{
+		List<Point> shiftPoints = new ArrayList<Point>();
+		for (int i = 0; i < board.getDimension(); i++)
+		{
+			for (int j = 0; j < board.getDimension(); j++)
+			{
+				if (board.getBoard()[i][j] == '_')
+					shiftPoints.add(new Point(i, j));
+			}
+		}
+		return shiftPoints;
 	}
 	
 }
