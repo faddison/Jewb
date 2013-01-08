@@ -4,12 +4,13 @@ import java.util.Random;
 
 public class Board 
 {
-	public char[][] board;
-	public char[] tiles;
-	public int dimension;
+	private char[][] board;
+	private char[] tiles;
+	private int dimension;
 	
 	public Board(int dimension, char[] tiles)
 	{
+		this.tiles = tiles;
 		this.dimension = dimension;
 		this.board = build(dimension, tiles);
 	}
@@ -29,22 +30,28 @@ public class Board
 		}
 		return newBoard;
 	}
-	
-	public void show()
-	{
-		System.out.println("[");
-		for (int i = 0; i < dimension; i++)
-		{
-			for (int j = 0; j < dimension; j++)
-			{
-				System.out.print(this.board[i][j]);
-				if (j < dimension - 1)
-					System.out.print(",");
-			}
-			System.out.println();
-		}
-		System.out.println("]");
+
+	public char[][] getBoard() {
+		return board;
 	}
-	
-	
+
+	public void setBoard(char[][] board) {
+		this.board = board;
+	}
+
+	public char[] getTiles() {
+		return tiles;
+	}
+
+	public void setTiles(char[] tiles) {
+		this.tiles = tiles;
+	}
+
+	public int getDimension() {
+		return dimension;
+	}
+
+	public void setDimension(int dimension) {
+		this.dimension = dimension;
+	}
 }
