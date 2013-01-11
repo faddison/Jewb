@@ -90,7 +90,19 @@ public class VirtualBoardHelper
 	
 	public Point getCoordinate(VirtualBoard vboard, Point p)
 	{
-		return vboard.getTileLocations()[p.x][p.y];
+		return getCoordinate(vboard, p.x, p.y);
+	}
+	
+	public Point getCoordinate(VirtualBoard vboard, int x, int y)
+	{
+		return vboard.getTileLocations()[x][y];
+	}
+	
+	public Pair getCoordinate(VirtualBoard vboard, Pair pair)
+	{
+		Point p1 = getCoordinate(vboard, pair.getP1());
+		Point p2 = getCoordinate(vboard, pair.getP2());
+		return new Pair(p1, p2);
 	}
 	
 	public void click(Point p1, Point p2, int delay)
@@ -124,14 +136,98 @@ public class VirtualBoardHelper
 		System.out.println("Clicked "+p.x+", "+p.y);
 	}
 	
-	public void clickFromFile(VirtualBoard vboard, String filepath)
+	public void clickPairs(VirtualBoard vboard, List<Pair> pairs) throws InterruptedException
 	{
-		FileReader reader = new FileReader();
-		List<Pair> pairs = reader.readPairs(filepath);
-		for (Pair p: pairs)
+		clickPairs(vboard, pairs, 0);
+	}
+	
+	public List<Pair> shiftPairsRight(List<Pair> pairs)
+	{
+		return shiftPairs(pairs, 1, 0);
+	}
+	
+	public List<Pair> shiftPairsLeft(List<Pair> pairs)
+	{
+		return shiftPairs(pairs, -1, 0);
+	}
+	
+	public List<Pair> shiftPairsDown(List<Pair> pairs)
+	{
+		return shiftPairs(pairs, 0, 1);
+	}
+	
+	public List<Pair> shiftPairsUp(List<Pair> pairs)
+	{
+		return shiftPairs(pairs, 0, -1);
+	}
+	
+	
+	
+	public List<Pair> shiftPairs(List<Pair> pairs, int shiftX, int shiftY)
+	{
+		List<Pair> newPairs = new ArrayList<Pair>();
+		for (Pair pair: pairs)
 		{
-			click(p);
+			System.out.println("old pair:"+pair.toString());
+			if (isPairDelay(pair))
+				newPairs.add(pair);
+			else
+			{
+				Point p1 = new Point(pair.getP1().x + shiftX, pair.getP1().y + shiftY);
+				Point p2 = new Point(pair.getP2().x + shiftX, pair.getP2().y + shiftY);
+				Pair newPair = new Pair(p1, p2);
+				System.out.println("new pair :"+newPair);
+				newPairs.add(newPair);
+			}
 		}
+		return newPairs;
+	}
+	
+	public List<Pair> invertPairs(List<Pair> pairs)
+	{
+		List<Pair> newPairs = new ArrayList<Pair>();
+		for (Pair pair: pairs)
+		{
+			//System.out.println("old pair:"+pair.toString());
+			if (isPairDelay(pair))
+				newPairs.add(pair);
+			else
+			{
+				Point p1 = new Point(pair.getP1().y, pair.getP1().x);
+				Point p2 = new Point(pair.getP2().y, pair.getP2().x);
+				Pair newPair = new Pair(p1, p2);
+				//System.out.println("new pair :"+newPair);
+				newPairs.add(newPair);
+			}
+		}
+		return newPairs;
+	}
+	
+	public void pairShiftingStrategy(VirtualBoard vboard, List<Pair> pairs, int delay) throws InterruptedException
+	{
+		clickPairs(vboard, pairs, delay);
+		clickPairs(vboard, shiftPairsRight(pairs), delay);
+		clickPairs(vboard, invertPairs(pairs), delay);
+		clickPairs(vboard, shiftPairsDown(invertPairs(pairs)), delay);
+	}
+	
+	public void clickPairs(VirtualBoard vboard, List<Pair> pairs, int delay) throws InterruptedException
+	{
+		for (Pair pair: pairs)
+		{
+			if (isPairDelay(pair))
+				Thread.sleep(delay);
+			else
+			{
+				if (validPoint(vboard, pair))
+				click(getCoordinate(vboard, pair));
+			}
+		}
+	}
+	
+	private boolean isPairDelay(Pair p)
+	{
+		return (p.getX1() == -1 && p.getX2() == -1 && p.getY1() == -1 && p.getY2() == -1);
 	}
 
 	public Point getRandomAdjacent(VirtualBoard vboard, Point p)
@@ -167,6 +263,11 @@ public class VirtualBoardHelper
 				x <= board.getDimension() - 1 &&
 				y >= 0 &&
 				y <= board.getDimension() - 1);
+	}
+	
+	private boolean validPoint(VirtualBoard vboard, Pair pair)
+	{
+		return (validPoint(vboard, pair.getP1()) && validPoint(vboard, pair.getP2()));
 	}
 	
 	
