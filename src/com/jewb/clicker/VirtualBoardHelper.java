@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.Vector;
 
+import com.jewb.core.Pair;
 import com.jewb.solver.Board;
+import com.jewb.util.FileReader;
 
 public class VirtualBoardHelper 
 {
@@ -44,7 +46,7 @@ public class VirtualBoardHelper
 		Point[] points = getRandomPair(vboard);
 		Point px = getCoordinate(vboard, points[0]);
 		Point py = getCoordinate(vboard, points[1]);
-		clickPoints(px, py);
+		click(px, py);
 	}
 	
 	public Point[] getRandomPair(VirtualBoard vboard)
@@ -81,7 +83,7 @@ public class VirtualBoardHelper
 		}
 		for (int i = 0; i < points.size(); i+=2)
 		{
-			clickPoints(points.get(i), points.get(i+1));
+			click(points.get(i), points.get(i+1));
 			Thread.sleep(delay);
 		}
 	}
@@ -91,13 +93,7 @@ public class VirtualBoardHelper
 		return vboard.getTileLocations()[p.x][p.y];
 	}
 	
-	public void clickPoints(Point p1, Point p2)
-	{
-		click(p1);
-		click(p2);
-	}
-	
-	public void clickPoints(Point p1, Point p2, int delay)
+	public void click(Point p1, Point p2, int delay)
 	{
 		click(p1);
 		try {
@@ -109,12 +105,33 @@ public class VirtualBoardHelper
 		click(p2);
 	}
 	
+	public void click(Pair p)
+	{
+		click(p.getP1(), p.getP2());
+	}
+	
+	public void click(Point p1, Point p2)
+	{
+		click(p1);
+		click(p2);
+	}
+	
 	public void click(Point p)
 	{
 		this.robot.mouseMove(p.x, p.y);
 		this.robot.mousePress(InputEvent.BUTTON1_MASK);
 		this.robot.mouseRelease(InputEvent.BUTTON1_MASK);
 		System.out.println("Clicked "+p.x+", "+p.y);
+	}
+	
+	public void clickFromFile(VirtualBoard vboard, String filepath)
+	{
+		FileReader reader = new FileReader();
+		List<Pair> pairs = reader.readPairs(filepath);
+		for (Pair p: pairs)
+		{
+			click(p);
+		}
 	}
 
 	public Point getRandomAdjacent(VirtualBoard vboard, Point p)
