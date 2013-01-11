@@ -54,6 +54,38 @@ public class VirtualBoardHelper
 		return new Point[]{first, second};
 	}
 	
+	public void clickSequentialPairs(VirtualBoard vboard, int delay, boolean reverse) throws InterruptedException
+	{
+		List<Point> points = new ArrayList<Point>();
+		for (int i = 0, ir = vboard.getDimension() - 1; i < vboard.getDimension(); i++, ir--)
+		{
+			for (int j = 0, jr = vboard.getDimension() - 1; j < vboard.getDimension(); j++, jr--)
+			{
+				if (reverse)
+				{
+					if (ir % 2 == 1)
+					{
+						points.add(getCoordinate(vboard, new Point(ir,jr)));
+						points.add(getCoordinate(vboard, new Point(ir-1,jr)));
+					}
+				}
+				else
+				{	
+					if (i % 2 == 0)
+					{
+						points.add(getCoordinate(vboard, new Point(i,j)));
+						points.add(getCoordinate(vboard, new Point(i+1,j)));
+					}
+				}	
+			}
+		}
+		for (int i = 0; i < points.size(); i+=2)
+		{
+			clickPoints(points.get(i), points.get(i+1));
+			Thread.sleep(delay);
+		}
+	}
+	
 	public Point getCoordinate(VirtualBoard vboard, Point p)
 	{
 		return vboard.getTileLocations()[p.x][p.y];
