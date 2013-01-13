@@ -1,11 +1,18 @@
 package com.jewb.patterns;
 
-public class CompletePattern implements IPattern
+import java.util.List;
+
+import com.jewb.core.Pair;
+import com.jewb.virtual.VirtualBoard;
+import com.jewb.virtual.VirtualContext;
+
+public class CompletePattern extends Pattern implements IPattern 
 {
 	@Override
-	public int execute() {
-		// TODO Auto-generated method stub
-		return 0;
+	public List<Pair> generate(VirtualContext vcontext) 
+	{
+		
+		return null;
 	}
 
 }

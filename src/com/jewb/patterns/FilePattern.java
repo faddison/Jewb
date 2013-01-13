@@ -5,7 +5,7 @@ import java.util.List;
 import com.jewb.core.Pair;
 import com.jewb.virtual.VirtualContext;
 
-public class RandomPattern extends Pattern implements IPattern {
+public class FilePattern extends Pattern implements IPattern {
 
 	@Override
 	public List<Pair> generate(VirtualContext vcontext) {
